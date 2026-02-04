@@ -2,7 +2,7 @@ name: Sync Upstream
 on:
   schedule:
     - cron: '0 0 * * *' # Runs daily at midnight
-  workflow_dispatch: # Allows you to trigger it manually
+  workflow_dispatch: # Allows manual trigger
 
 jobs:
   sync:
@@ -11,7 +11,8 @@ jobs:
       - name: Checkout target branch
         uses: actions/checkout@v4
         with:
-          ref: main # Change to 'master' if your repo uses master
+          ref: main # Ensure this matches your branch name (main or master)
+          fetch-depth: 0 # Fetches all history so Git recognizes the upstream
 
       - name: Sync with Upstream
         run: |
@@ -19,5 +20,6 @@ jobs:
           git config --global user.email 'action@github.com'
           git remote add upstream https://github.com/consumet/consumet-api.git
           git fetch upstream
-          git merge upstream/main --ff-only || git merge upstream/master --ff-only
+          # Use --allow-unrelated-histories to force the merge
+          git merge upstream/main --allow-unrelated-histories -m "Syncing with upstream" || git merge upstream/master --allow-unrelated-histories -m "Syncing with upstream"
           git push origin main
