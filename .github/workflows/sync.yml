@@ -1,14 +1,18 @@
 name: Sync Upstream
 on:
   schedule:
-    - cron: '22 * * * *' # Runs daily at midnight
-  workflow_dispatch: # Allows manual trigger
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync with Upstream
-        uses: ahmadnassri/action-upstream-sync@v2
+      - name: Sync Upstream
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
         with:
-          upstream_repository: consumet/consumet-api
-          target_branch: master # or main
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_repo: consumet/consumet-api
+          upstream_sync_branch: main
+          test_mode: false
