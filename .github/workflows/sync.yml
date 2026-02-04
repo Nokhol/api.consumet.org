@@ -1,18 +1,23 @@
 name: Sync Upstream
 on:
   schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
+    - cron: '0 0 * * *' # Runs daily at midnight
+  workflow_dispatch: # Allows you to trigger it manually
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync Upstream
-        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
+      - name: Checkout target branch
+        uses: actions/checkout@v4
         with:
-          target_sync_branch: main
-          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
-          upstream_sync_repo: consumet/consumet-api
-          upstream_sync_branch: main
-          test_mode: false
+          ref: main # Change to 'master' if your repo uses master
+
+      - name: Sync with Upstream
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git remote add upstream https://github.com/consumet/consumet-api.git
+          git fetch upstream
+          git merge upstream/main --ff-only || git merge upstream/master --ff-only
+          git push origin main
