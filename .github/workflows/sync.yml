@@ -1,8 +1,8 @@
 name: Sync Upstream
 on:
   schedule:
-    - cron: '22 * * * *' # Runs daily at midnight
-  workflow_dispatch: # Allows manual trigger
+    - cron: '22 8,13,18 * * *' 
+  workflow_dispatch: 
 
 jobs:
   sync:
@@ -11,8 +11,8 @@ jobs:
       - name: Checkout target branch
         uses: actions/checkout@v4
         with:
-          ref: main # Ensure this matches your branch name (main or master)
-          fetch-depth: 0 # Fetches all history so Git recognizes the upstream
+          ref: main 
+          fetch-depth: 0
 
       - name: Sync with Upstream
         run: |
